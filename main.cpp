@@ -5,9 +5,8 @@
 using namespace std;
 
 int main() {
-    vector<Card> deck;
-    vector<Competitor> competitors;
     GameManager game_manager;
     game_manager.add_competitors();
+    game_manager.generate_and_shuffle_deck();
     return 0;
 }

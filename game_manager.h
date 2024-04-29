@@ -1,10 +1,15 @@
 #ifndef GAME_MANAGER_H
 #define GAME_MANAGER_H
 
-#include "human.h"
-#include "computer.h"
 #include "competitor.h"
+#include "computer.h"
+#include "human.h"
 #include <cstdio>
+#include <random>
+
+using std::mt19937;
+using std::random_device;
+using std::shuffle;
 
 class GameManager {
   private:
@@ -26,14 +31,17 @@ class GameManager {
                     Human human;
                     competitors.push_back(human);
                     break;
-                } case 2: {
+                }
+                case 2: {
                     Computer computer;
                     competitors.push_back(computer);
                     break;
-                } case 99: {
+                }
+                case 99: {
                     printf("Secret case\n");
                     break;
-                } default: {
+                }
+                default: {
                     if (competitors.size() >= 2) {
                         return;
                     } else {
@@ -43,6 +51,17 @@ class GameManager {
                 }
             }
         } while (true);
+    }
+
+    void generate_and_shuffle_deck() {
+        for (auto &suit : {"spades", "diamonds", "hearts", "clubs"}) {
+            for (int rank = 2; rank <= 14; rank++) {
+                Card card(suit, rank);
+                deck.push_back(card);
+            }
+        }
+        mt19937 rng(random_device{}());
+        shuffle(deck.begin(), deck.end(), rng);
     }
 };
 
