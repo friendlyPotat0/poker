@@ -1,3 +1,6 @@
+#ifndef CARD_H
+#define CARD_H
+
 #include <algorithm>
 #include <array>
 #include <iostream>
@@ -71,3 +74,5 @@ class Card {
         return lines;
     }
 };
+
+#endif
