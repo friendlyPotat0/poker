@@ -224,33 +224,33 @@ class GameManager {
         vector<thread> threads;
         for (auto &competitor : competitors) {
             threads.emplace_back([&]() {
-                vector<int> rank_count(14, 0);
                 vector<int> suit_count(4, 0);
+                vector<int> rank_count(14, 0);
                 // Count the number of each rank and suit
                 for (auto &card : competitor->get_cards()) {
-                    rank_count.at(card.get_rank() - 2)++;
                     suit_count.at(card.get_suit() == "spades" ? 0 : card.get_suit() == "diamonds" ? 1 : card.get_suit() == "hearts" ? 2 : 3)++;
+                    rank_count.at(card.get_rank() - 2)++;
                 }
                 // Perform hand evaluation
-                Evaluator evaluator;
+                Evaluator evaluator(suit_count, rank_count);
                 int score = 0;
-                if (evaluator.has_royal_flush(rank_count, suit_count)) {
+                if (evaluator.has_royal_flush()) {
                     score = 9;
-                } else if (evaluator.has_straight_flush(rank_count, suit_count)) {
+                } else if (evaluator.has_straight_flush()) {
                     score = 8;
-                } else if (evaluator.has_four_of_a_kind(rank_count)) {
+                } else if (evaluator.has_four_of_a_kind()) {
                     score = 7;
-                } else if (evaluator.has_full_house(rank_count)) {
+                } else if (evaluator.has_full_house()) {
                     score = 6;
-                } else if (evaluator.has_flush(suit_count)) {
+                } else if (evaluator.has_flush()) {
                     score = 5;
-                } else if (evaluator.has_straight(rank_count)) {
+                } else if (evaluator.has_straight()) {
                     score = 4;
-                } else if (evaluator.has_three_of_a_kind(rank_count)) {
+                } else if (evaluator.has_three_of_a_kind()) {
                     score = 3;
-                } else if (evaluator.has_two_pair(rank_count)) {
+                } else if (evaluator.has_two_pair()) {
                     score = 2;
-                } else if (evaluator.has_pair(rank_count)) {
+                } else if (evaluator.has_pair()) {
                     score = 1;
                 }
                 competitor->set_score(score);
