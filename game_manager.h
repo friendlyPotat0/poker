@@ -3,6 +3,7 @@
 
 #include "competitor.h"
 #include "computer.h"
+#include "evaluator.h"
 #include "human.h"
 #include <random>
 #include <vector>
@@ -20,18 +21,25 @@ class GameManager {
     bool omniscient;
 
   public:
-    GameManager() { omniscient = false; }
+    GameManager() {
+        deck.reserve(52);
+        omniscient = false;
+    }
     void configure_game() {
         int choice;
         printf("GAME SETTINGS\n");
-        printf("1. Omniscient mode\n");
+        printf("1. Omniscient mode (false)\n");
         printf("2. Save\n");
         do {
-            printf("Enter choice to enable: ");
+            printf("Enter choice: ");
             scanf("%d", &choice);
             switch (choice) {
                 case 1: {
-                    omniscient = true;
+                    int omniscient;
+                    printf("Enter 1 to enable, 0 to disable: ");
+                    scanf("%d", &omniscient);
+                    if (omniscient == 1)
+                        this->omniscient = true;
                     break;
                 }
                 default: {
@@ -50,25 +58,34 @@ class GameManager {
         do {
             printf("Enter option: ");
             scanf("%d", &choice);
+            bool can_add_players = competitors.size() < (52 - 2) / 5;
             switch (choice) {
                 case 1: {
-                    Human *human = new Human();
-                    string name;
-                    printf("Enter name: ");
-                    cin >> name;
-                    cin.ignore();
-                    human->set_name(name);
-                    competitors.push_back(human);
+                    if (can_add_players) {
+                        Human *human = new Human();
+                        string name;
+                        printf("Enter name: ");
+                        cin >> name;
+                        cin.ignore();
+                        human->set_name(name);
+                        competitors.push_back(human);
+                    } else {
+                        printf("You can't add more players! Maximum reached\n");
+                    }
                     break;
                 }
                 case 2: {
-                    Computer *computer = new Computer();
-                    string name;
-                    printf("Enter name: ");
-                    cin >> name;
-                    cin.ignore();
-                    computer->set_name(name);
-                    competitors.push_back(computer);
+                    if (can_add_players) {
+                        Computer *computer = new Computer();
+                        string name;
+                        printf("Enter name: ");
+                        cin >> name;
+                        cin.ignore();
+                        computer->set_name(name);
+                        competitors.push_back(computer);
+                    } else {
+                        printf("You can't add more players! Maximum reached\n");
+                    }
                     break;
                 }
                 case 99: {
@@ -131,41 +148,63 @@ class GameManager {
         }
     }
 
-    void evaluate_hand(Competitor *competitor) {
-        int score = 0;
-        vector<int> rank_count(14, 0);
-        vector<int> suit_count(4, 0);
-        for (auto &card : competitor->get_cards()) {
-            rank_count.at(card.get_rank() - 2)++;
-            suit_count.at(card.get_suit() == "spades" ? 0 : card.get_suit() == "diamonds" ? 1 : card.get_suit() == "hearts" ? 2 : 3)++;
-        }
-        // Evaluate pair
-        int pairs = 0;
-        for (int i = 0; i < rank_count.size(); i++) {
-            if (rank_count.at(i) == 2)
-                pairs++;
-        }
-        if (pairs == 1) {
-            score = 1;
-        } else if (pairs == 2) {
-            score = 2;
-        }
-        // Evaluate three of a kind
-        for (int i = 0; i < rank_count.size(); i++) {
-            if (rank_count.at(i) == 3)
-                score = 3;
-        }
-        // Evaluate straight
-        for (int i = 0; i < rank_count.size() - 4; i++) {
-            if (rank_count.at(i) && rank_count.at(i + 1) && rank_count.at(i + 2) && rank_count.at(i + 3) && rank_count.at(i + 4))
+    void evaluate_hands() {
+        for (auto &competitor : competitors) {
+            vector<int> rank_count(14, 0);
+            vector<int> suit_count(4, 0);
+            // Count the number of each rank and suit
+            for (auto &card : competitor->get_cards()) {
+                rank_count.at(card.get_rank() - 2)++;
+                suit_count.at(card.get_suit() == "spades" ? 0 : card.get_suit() == "diamonds" ? 1 : card.get_suit() == "hearts" ? 2 : 3)++;
+            }
+            // Perform hand evaluation
+            Evaluator evaluator;
+            int score = 0;
+            if (evaluator.has_royal_flush(rank_count, suit_count)) {
+                score = 9;
+            } else if (evaluator.has_straight_flush(rank_count, suit_count)) {
+                score = 8;
+            } else if (evaluator.has_four_of_a_kind(rank_count)) {
+                score = 7;
+            } else if (evaluator.has_full_house(rank_count)) {
+                score = 6;
+            } else if (evaluator.has_flush(suit_count)) {
+                score = 5;
+            } else if (evaluator.has_straight(rank_count)) {
                 score = 4;
+            } else if (evaluator.has_three_of_a_kind(rank_count)) {
+                score = 3;
+            } else if (evaluator.has_two_pair(rank_count)) {
+                score = 2;
+            } else if (evaluator.has_pair(rank_count)) {
+                score = 1;
+            }
+            competitor->set_score(score);
         }
-        // Evaluate flush
-        // Set score
-        competitor->set_score(score);
     }
 
-    void determine_winner() {}
+    void display_scores() {
+        printf("SCORES\n");
+        for (auto &competitor : competitors) {
+            printf("#%s (%s) score: %d\n", competitor->get_name().c_str(), competitor->get_nature().c_str(), competitor->get_score());
+        }
+    }
+
+    void announce_winner() {
+        Competitor *winner = nullptr;
+        int max_score = -1;
+        int max_rank = -1;
+        for (auto &competitor : competitors) {
+            int competitor_score = competitor->get_score();
+            int competitor_rank = competitor->get_highest_rank();
+            if (competitor_score > max_score || (competitor_score == max_score && competitor_rank > max_rank)) {
+                winner = competitor;
+                max_score = competitor_score;
+                max_rank = competitor_rank;
+            }
+        }
+        printf("Winner: #%s (%s)\n", winner->get_name().c_str(), winner->get_nature().c_str());
+    }
 };
 
 #endif

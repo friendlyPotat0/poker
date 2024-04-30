@@ -13,5 +13,8 @@ int main() {
     game_manager.display_competitor_cards();
     game_manager.exchange_competitor_cards();
     game_manager.display_competitor_cards();
+    game_manager.evaluate_hands();
+    game_manager.display_scores();
+    game_manager.announce_winner();
     return 0;
 }

@@ -8,7 +8,7 @@ class Human : public Competitor {
     Human() { nature = "human"; }
     string get_identifier() { return nature; }
     void exchange_cards(vector<Card> &deck) override {
-        int choice, cards_exchanged{0};
+        int choice, cards_exchanged = 0;
         printf("Exchange card\n");
         printf("1. Yes\n");
         printf("2. No\n");
@@ -21,7 +21,7 @@ class Human : public Competitor {
                     if (cards_exchanged < 3) {
                         int index;
                         printf("Enter index of card to exchange: ");
-                        scanf(" %d", &index);
+                        scanf("%d", &index);
                         cards.at(index) = deck.back();
                         deck.pop_back();
                     }
