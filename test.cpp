@@ -12,16 +12,16 @@ int main() {
 
     std::vector<Card> test_cards = {test_card_1, test_card_2, test_card_3, test_card_4};
 
-    std::vector<std::string> card_ascii = test_card_1.ascii_version_of_card(test_cards);
-    for (const auto& line : card_ascii) {
+    std::vector<std::string> card_ascii = test_card_1.construct_ascii_cards(test_cards);
+    for (const auto &line : card_ascii) {
         std::cout << line << std::endl;
     }
 
     test_cards.at(1).set_hidden(true);
     test_cards.at(3).set_hidden(true);
     // test_cards.at(1)=test_card_2;
-    std::vector<std::string> hidden_card_ascii = test_card_1.ascii_version_of_card(test_cards);
-    for (const auto& line : hidden_card_ascii) {
+    std::vector<std::string> hidden_card_ascii = test_card_1.construct_ascii_cards(test_cards);
+    for (const auto &line : hidden_card_ascii) {
         std::cout << line << std::endl;
     }
 

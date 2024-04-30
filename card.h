@@ -34,8 +34,10 @@ class Card {
     }
 
     void set_hidden(const bool &hidden) { this->hidden = hidden; }
+    int get_rank() { return rank; }
+    string get_suit() { return suit; }
 
-    vector<string> ascii_version_of_card(const vector<Card> &cards) {
+    static vector<string> construct_ascii_cards(const vector<Card> &cards) {
         unordered_map<string, string> suits_map = {{"spades", "♠"}, {"diamonds", "♦"}, {"hearts", "♥"}, {"clubs", "♣"}};
         vector<string> fragments(9);
         for (const auto &card : cards) {
