@@ -14,7 +14,9 @@ class Competitor {
     Competitor() { score = 0; }
     string get_nature() { return nature; }
     void add_card(const Card &card) { cards.push_back(card); }
-    virtual void exchange_cards(vector<Card> &deck) {}
+    virtual void exchange_cards(vector<Card> &deck) {
+        printf("I don't have a brain yet :(\n");
+    }
     void set_name(string name) { this->name = name; }
     string get_name() { return name; }
     vector<Card> get_cards() { return cards; }

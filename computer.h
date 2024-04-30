@@ -7,7 +7,7 @@ class Computer : public Competitor {
   public:
     Computer() { nature = "computer"; }
 
-    void exchange_cards(vector<Card> &deck) override {
+    /* void exchange_cards(vector<Card> &deck) override {
         int cards_exchanged = 0;
         do {
             int index;
@@ -22,7 +22,7 @@ class Computer : public Competitor {
                 throw std::runtime_error("Index out of range [0, 5]");
             }
         } while (cards_exchanged < 3);
-    }
+    } */
 };
 
 #endif
