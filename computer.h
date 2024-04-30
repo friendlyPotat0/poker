@@ -8,7 +8,7 @@ class Computer : public Competitor {
     Computer() { nature = "computer"; }
 
     void exchange_cards(vector<Card> &deck) override {
-        printf("I don't have a brain yet\n");
+        printf("I don't have a brain yet :(\n");
     }
 };
 

@@ -11,6 +11,7 @@ int main() {
     game_manager.deal_cards();
     game_manager.display_community_cards();
     game_manager.display_competitor_cards();
-    // game_manager.exchange_cards();
+    game_manager.exchange_competitor_cards();
+    game_manager.display_competitor_cards();
     return 0;
 }
