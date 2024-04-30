@@ -6,12 +6,14 @@
 #include "evaluator.h"
 #include "human.h"
 #include <random>
+#include <thread>
 #include <vector>
 
 using std::cin;
 using std::mt19937;
 using std::random_device;
 using std::shuffle;
+using std::thread;
 using std::vector;
 
 class GameManager {
@@ -133,17 +135,23 @@ class GameManager {
         // https://www.cardschat.com/poker/strategy/poker-hands
         competitors.pop_back();
         // royal flush
-        competitors[0]->add_card(Card("diamonds", 10));
-        competitors[0]->add_card(Card("diamonds", 11));
-        competitors[0]->add_card(Card("diamonds", 12));
-        competitors[0]->add_card(Card("diamonds", 13));
-        competitors[0]->add_card(Card("diamonds", 14));
-        // straight flush
-        competitors[1]->add_card(Card("clubs", 4));
-        competitors[1]->add_card(Card("clubs", 5));
-        competitors[1]->add_card(Card("clubs", 6));
-        competitors[1]->add_card(Card("clubs", 7));
-        competitors[1]->add_card(Card("clubs", 8));
+        // competitors[0]->add_card(Card("diamonds", 10));
+        // competitors[0]->add_card(Card("diamonds", 11));
+        // competitors[0]->add_card(Card("diamonds", 12));
+        // competitors[0]->add_card(Card("diamonds", 13));
+        // competitors[0]->add_card(Card("diamonds", 14));
+        // straight flush #1
+        competitors[0]->add_card(Card("clubs", 4));
+        competitors[0]->add_card(Card("clubs", 5));
+        competitors[0]->add_card(Card("clubs", 6));
+        competitors[0]->add_card(Card("clubs", 7));
+        competitors[0]->add_card(Card("clubs", 8));
+        // straight flush #2
+        competitors[1]->add_card(Card("clubs", 9));
+        competitors[1]->add_card(Card("clubs", 10));
+        competitors[1]->add_card(Card("clubs", 11));
+        competitors[1]->add_card(Card("clubs", 12));
+        competitors[1]->add_card(Card("clubs", 13));
         // four of a kind
         competitors[2]->add_card(Card("hearts", 7));
         competitors[2]->add_card(Card("spades", 7));
@@ -213,37 +221,44 @@ class GameManager {
     }
 
     void evaluate_hands() {
+        vector<thread> threads;
         for (auto &competitor : competitors) {
-            vector<int> rank_count(14, 0);
-            vector<int> suit_count(4, 0);
-            // Count the number of each rank and suit
-            for (auto &card : competitor->get_cards()) {
-                rank_count.at(card.get_rank() - 2)++;
-                suit_count.at(card.get_suit() == "spades" ? 0 : card.get_suit() == "diamonds" ? 1 : card.get_suit() == "hearts" ? 2 : 3)++;
-            }
-            // Perform hand evaluation
-            Evaluator evaluator;
-            int score = 0;
-            if (evaluator.has_royal_flush(rank_count, suit_count)) {
-                score = 9;
-            } else if (evaluator.has_straight_flush(rank_count, suit_count)) {
-                score = 8;
-            } else if (evaluator.has_four_of_a_kind(rank_count)) {
-                score = 7;
-            } else if (evaluator.has_full_house(rank_count)) {
-                score = 6;
-            } else if (evaluator.has_flush(suit_count)) {
-                score = 5;
-            } else if (evaluator.has_straight(rank_count)) {
-                score = 4;
-            } else if (evaluator.has_three_of_a_kind(rank_count)) {
-                score = 3;
-            } else if (evaluator.has_two_pair(rank_count)) {
-                score = 2;
-            } else if (evaluator.has_pair(rank_count)) {
-                score = 1;
-            }
-            competitor->set_score(score);
+            threads.emplace_back([&]() {
+                vector<int> rank_count(14, 0);
+                vector<int> suit_count(4, 0);
+                // Count the number of each rank and suit
+                for (auto &card : competitor->get_cards()) {
+                    rank_count.at(card.get_rank() - 2)++;
+                    suit_count.at(card.get_suit() == "spades" ? 0 : card.get_suit() == "diamonds" ? 1 : card.get_suit() == "hearts" ? 2 : 3)++;
+                }
+                // Perform hand evaluation
+                Evaluator evaluator;
+                int score = 0;
+                if (evaluator.has_royal_flush(rank_count, suit_count)) {
+                    score = 9;
+                } else if (evaluator.has_straight_flush(rank_count, suit_count)) {
+                    score = 8;
+                } else if (evaluator.has_four_of_a_kind(rank_count)) {
+                    score = 7;
+                } else if (evaluator.has_full_house(rank_count)) {
+                    score = 6;
+                } else if (evaluator.has_flush(suit_count)) {
+                    score = 5;
+                } else if (evaluator.has_straight(rank_count)) {
+                    score = 4;
+                } else if (evaluator.has_three_of_a_kind(rank_count)) {
+                    score = 3;
+                } else if (evaluator.has_two_pair(rank_count)) {
+                    score = 2;
+                } else if (evaluator.has_pair(rank_count)) {
+                    score = 1;
+                }
+                competitor->set_score(score);
+            });
+        }
+        // Wait for all threads to finish
+        for (auto &thread : threads) {
+            thread.join();
         }
     }
 
