@@ -13,7 +13,7 @@ class Competitor {
   public:
     Competitor() { score = 0; }
     string get_nature() { return nature; }
-    void add_card(Card &card) { cards.push_back(card); }
+    void add_card(const Card &card) { cards.push_back(card); }
     virtual void exchange_cards(vector<Card> &deck) {}
     void set_name(string name) { this->name = name; }
     string get_name() { return name; }

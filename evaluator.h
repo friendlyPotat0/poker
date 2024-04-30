@@ -7,7 +7,7 @@ using std::vector;
 
 class Evaluator {
   public:
-    bool has_royal_flush(const vector<int> &rank_count, const vector<int> &suit_count) { return rank_count[8] == 1 && rank_count[9] == 1 && rank_count[10] == 1 && rank_count[11] == 1 && rank_count[12] == 1 && suit_count[0] == 5; }
+    bool has_royal_flush(const vector<int> &rank_count, const vector<int> &suit_count) { return rank_count[8] == 1 && rank_count[9] == 1 && rank_count[10] == 1 && rank_count[11] == 1 && rank_count[12] == 1 && (suit_count[0] == 5 || suit_count[1] == 5 || suit_count[2] == 5 || suit_count[3] == 5); }
 
     bool has_straight_flush(const vector<int> &rank_count, const vector<int> &suit_count) {
         for (int i = 0; i <= 9; ++i) {

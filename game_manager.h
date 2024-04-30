@@ -128,6 +128,66 @@ class GameManager {
         }
     }
 
+    // case 99 dependant
+    void deal_cards_TEST() {
+        // https://www.cardschat.com/poker/strategy/poker-hands
+        competitors.pop_back();
+        // royal flush
+        competitors[0]->add_card(Card("diamonds", 10));
+        competitors[0]->add_card(Card("diamonds", 11));
+        competitors[0]->add_card(Card("diamonds", 12));
+        competitors[0]->add_card(Card("diamonds", 13));
+        competitors[0]->add_card(Card("diamonds", 14));
+        // straight flush
+        competitors[1]->add_card(Card("clubs", 4));
+        competitors[1]->add_card(Card("clubs", 5));
+        competitors[1]->add_card(Card("clubs", 6));
+        competitors[1]->add_card(Card("clubs", 7));
+        competitors[1]->add_card(Card("clubs", 8));
+        // four of a kind
+        competitors[2]->add_card(Card("hearts", 7));
+        competitors[2]->add_card(Card("spades", 7));
+        competitors[2]->add_card(Card("diamonds", 7));
+        competitors[2]->add_card(Card("clubs", 7));
+        competitors[2]->add_card(Card("hearts", 10));
+        // full house
+        competitors[3]->add_card(Card("diamonds", 13));
+        competitors[3]->add_card(Card("spades", 13));
+        competitors[3]->add_card(Card("hearts", 13));
+        competitors[3]->add_card(Card("clubs", 11));
+        competitors[3]->add_card(Card("hearts", 11));
+        // flush
+        competitors[4]->add_card(Card("hearts", 6));
+        competitors[4]->add_card(Card("hearts", 8));
+        competitors[4]->add_card(Card("hearts", 12));
+        competitors[4]->add_card(Card("hearts", 3));
+        competitors[4]->add_card(Card("hearts", 10));
+        // straight
+        competitors[5]->add_card(Card("spades", 6));
+        competitors[5]->add_card(Card("hearts", 7));
+        competitors[5]->add_card(Card("clubs", 8));
+        competitors[5]->add_card(Card("diamonds", 9));
+        competitors[5]->add_card(Card("spades", 10));
+        // three of a kind
+        competitors[6]->add_card(Card("hearts", 13));
+        competitors[6]->add_card(Card("spades", 13));
+        competitors[6]->add_card(Card("diamonds", 13));
+        competitors[6]->add_card(Card("clubs", 3));
+        competitors[6]->add_card(Card("hearts", 7));
+        // two pair
+        competitors[7]->add_card(Card("hearts", 14));
+        competitors[7]->add_card(Card("clubs", 14));
+        competitors[7]->add_card(Card("spades", 4));
+        competitors[7]->add_card(Card("hearts", 4));
+        competitors[7]->add_card(Card("hearts", 12));
+        // pair
+        competitors[8]->add_card(Card("hearts", 5));
+        competitors[8]->add_card(Card("spades", 5));
+        competitors[8]->add_card(Card("hearts", 12));
+        competitors[8]->add_card(Card("diamonds", 8));
+        competitors[8]->add_card(Card("hearts", 6));
+    }
+
     void display_competitor_cards() {
         printf("COMPETITOR CARDS\n");
         bool visible = true; // First competitor
