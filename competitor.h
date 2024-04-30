@@ -7,10 +7,11 @@ class Competitor {
   protected:
     string name;
     vector<Card> cards;
-    int score{0};
+    int score;
     string nature;
 
   public:
+    Competitor() { score = 0; }
     string get_nature() { return nature; }
     void add_card(Card &card) { cards.push_back(card); }
     virtual void exchange_cards(vector<Card> &deck) {}

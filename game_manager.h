@@ -17,8 +17,30 @@ class GameManager {
   private:
     vector<Card> deck;
     vector<Competitor *> competitors;
+    bool omniscient;
 
   public:
+    GameManager() { omniscient = false; }
+    void configure_game() {
+        int choice;
+        printf("GAME SETTINGS\n");
+        printf("1. Omniscient mode\n");
+        printf("2. Save\n");
+        do {
+            printf("Enter choice to enable: ");
+            scanf("%d", &choice);
+            switch (choice) {
+                case 1: {
+                    omniscient = true;
+                    break;
+                }
+                default: {
+                    return;
+                }
+            }
+        } while (true);
+    }
+
     void add_competitors() {
         int choice;
         printf("ADD COMPETITORS\n");
@@ -87,11 +109,12 @@ class GameManager {
 
     void display_competitor_cards() {
         printf("COMPETITOR CARDS\n");
-        bool hidden = false;
+        bool visible = true; // First competitor
         for (auto &competitor : competitors) {
-            if (hidden)
+            if (!visible)
                 competitor->hide_cards(true);
-            hidden = true;
+            if (!omniscient)
+                visible = false;
             vector<string> ascii_cards = Card::construct_ascii_cards(competitor->get_cards());
             printf("#%s (%s)\n", competitor->get_name().c_str(), competitor->get_nature().c_str());
             for (const string &line : ascii_cards) {
