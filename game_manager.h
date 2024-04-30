@@ -89,8 +89,12 @@ class GameManager {
                     break;
                 }
                 case 99: {
-                    printf("Secret case\n");
-                    break;
+                    for (int i = 0; i < 10; i++) {
+                        Computer *computer = new Computer();
+                        computer->set_name(to_string(i));
+                        competitors.push_back(computer);
+                    }
+                    return;
                 }
                 default: {
                     if (competitors.size() >= 2) {
