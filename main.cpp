@@ -9,7 +9,6 @@ int main() {
     game_manager.add_competitors();
     game_manager.generate_and_shuffle_deck();
     game_manager.deal_cards();
-    game_manager.display_community_cards();
     game_manager.display_competitor_cards();
     game_manager.exchange_competitor_cards();
     game_manager.display_competitor_cards();

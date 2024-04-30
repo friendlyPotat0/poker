@@ -17,13 +17,13 @@ class Human : public Competitor {
             scanf("%d", &choice);
             switch (choice) {
                 case 1: {
+                    cards_exchanged++;
                     if (cards_exchanged < 3) {
                         int index;
                         printf("Enter index of card to exchange: ");
                         scanf(" %d", &index);
                         cards.at(index) = deck.back();
                         deck.pop_back();
-                        cards_exchanged++;
                     }
                     break;
                 }

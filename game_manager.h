@@ -16,7 +16,6 @@ using std::vector;
 class GameManager {
   private:
     vector<Card> deck;
-    vector<Card> community_cards;
     vector<Competitor *> competitors;
 
   public:
@@ -78,25 +77,11 @@ class GameManager {
     }
 
     void deal_cards() {
-        // Community cards
-        for (int i = 0; i < 5; i++) {
-            community_cards.push_back(deck.back());
-            deck.pop_back();
-        }
-        // Competitor cards
         for (auto &competitor : competitors) {
-            for (int i = 0; i < 2; i++) {
+            for (int i = 0; i < 5; i++) {
                 competitor->add_card(deck.back());
                 deck.pop_back();
             }
-        }
-    }
-
-    void display_community_cards() {
-        printf("COMMUNITY CARDS\n");
-        vector<string> ascii_cards = Card::construct_ascii_cards(community_cards);
-        for (const string &line : ascii_cards) {
-            printf("%s\n", line.c_str());
         }
     }
 
@@ -120,12 +105,6 @@ class GameManager {
         for (auto &competitor : competitors) {
             printf("#%s (%s) turn\n", competitor->get_name().c_str(), competitor->get_nature().c_str());
             competitor->exchange_cards(deck);
-        }
-    }
-
-    void merge_community_cards(Competitor *competitor) {
-        for (auto &card : community_cards) {
-            competitor->add_card(card);
         }
     }
 
